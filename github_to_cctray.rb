@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'xmlsimple'
-
 # Convert from Github Actions API format (dropping unused fields):
 #
 # { 'workflow_runs' => [
@@ -83,9 +81,16 @@ class GithubToCCTray
   end
 
   def convert_to_xml(github_workflow_runs, branch = nil)
-    XmlSimple.xml_out(convert(github_workflow_runs, branch), {
-                        rootname: 'Projects',
-                        anonymoustag: 'Project'
-                      })
+    <<~XML
+      <Projects>
+        #{
+          convert(github_workflow_runs, branch).map do |project|
+            <<~XML.chomp
+              <Project name="#{project[:name]}" activity="#{project[:activity]}" lastBuildLabel="#{project[:lastBuildLabel]}" lastBuildStatus="#{project[:lastBuildStatus]}" lastBuildTime="#{project[:lastBuildTime]}" webUrl="#{project[:webUrl]}" />
+            XML
+          end.join("\n")
+         }
+      </Projects>
+    XML
   end
 end

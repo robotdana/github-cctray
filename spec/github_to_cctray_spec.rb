@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../github_to_cctray.rb'
-require 'rspec/match_fuzzy'
 require 'time'
 
 describe GithubToCCTray do
@@ -108,10 +107,12 @@ describe GithubToCCTray do
   end
 
   it 'should look alright in XML' do
-    expect(subject.convert_to_xml(template_github_job_status)).to match_fuzzy(
-      '<Projects>
-                <Project name="a_group/a_repo" activity="Sleeping" lastBuildLabel="1" lastBuildStatus="Success" lastBuildTime="2020-03-09T21:03:53Z" webUrl="https://github.com/build-canaries/nevergreen/actions/runs/52530432" />
-              </Projects>'
+    expect(subject.convert_to_xml(template_github_job_status)).to eq(
+      <<~XML
+        <Projects>
+          <Project name="a_group/a_repo" activity="Sleeping" lastBuildLabel="1" lastBuildStatus="Success" lastBuildTime="2020-03-09T21:03:53Z" webUrl="https://github.com/build-canaries/nevergreen/actions/runs/52530432" />
+        </Projects>
+      XML
     )
   end
 
