@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-require './server'
+require_relative './server'
 run Sinatra::Application
